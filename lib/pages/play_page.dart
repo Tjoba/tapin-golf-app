@@ -14,6 +14,13 @@ class _PlayPageState extends State<PlayPage> {
   List<String> selectedPlayers = []; // Track selected players
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-select the logged-in user (Tobias Hanner)
+    selectedPlayers = ['Tobias Hanner'];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -37,16 +44,20 @@ class _PlayPageState extends State<PlayPage> {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Colors.grey[300]!,
-                  width: 1,
-                ),
+                borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: TextField(
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 16,
+                  fontWeight: FontWeight.w400,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Search golf courses or locations...',
@@ -54,20 +65,18 @@ class _PlayPageState extends State<PlayPage> {
                     color: Colors.grey[500],
                     fontFamily: 'Inter',
                   ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey[500],
-                    size: 20,
-                  ),
-                  suffixIcon: Icon(
-                    Icons.my_location,
-                    color: Colors.grey[500],
-                    size: 20,
+                  prefixIcon: Container(
+                    margin: const EdgeInsets.only(left: 8),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.grey[500],
+                      size: 22,
+                    ),
                   ),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                    horizontal: 20,
+                    vertical: 18,
                   ),
                 ),
               ),
@@ -542,10 +551,10 @@ class _CourseFilterChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Theme.of(context).colorScheme.primary : Colors.white,
+          color: isSelected ? const Color(0xFF3F768E) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey[300]!,
+            color: isSelected ? const Color(0xFF3F768E) : Colors.grey[300]!,
             width: 1,
           ),
         ),
@@ -589,11 +598,13 @@ class _PlayerSelectionWidget extends StatefulWidget {
 
 class _PlayerSelectionWidgetState extends State<_PlayerSelectionWidget> {
   final List<Map<String, dynamic>> _availablePlayers = [
-    {'name': 'John Smith', 'handicap': '12', 'avatar': '👤'},
-    {'name': 'Sarah Johnson', 'handicap': '8', 'avatar': '👩'},
-    {'name': 'Mike Wilson', 'handicap': '15', 'avatar': '👨'},
-    {'name': 'Emily Davis', 'handicap': '6', 'avatar': '👩‍💼'},
-    {'name': 'Tom Brown', 'handicap': '18', 'avatar': '👨‍💼'},
+    {'name': 'Tobias Hanner', 'handicap': '16.6', 'avatar': '👤', 'imageUrl': 'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY', 'isCurrentUser': true}, // Logged in user
+    {'name': 'Andreas Lantz', 'handicap': '12', 'avatar': '👤'},
+    {'name': 'Magnus Berg', 'handicap': '8', 'avatar': '�'},
+    {'name': 'Markus Ahlsen', 'handicap': '15', 'avatar': '�'},
+    {'name': 'Martin Hanner', 'handicap': '18', 'avatar': '👤'},
+    {'name': 'Pelle Holmstrom', 'handicap': '11', 'avatar': '👤'},
+    {'name': 'Stefan Landfeldt', 'handicap': '14', 'avatar': '�'},
   ];
 
   @override
@@ -601,38 +612,6 @@ class _PlayerSelectionWidgetState extends State<_PlayerSelectionWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Selected players count
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.green.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Colors.green.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.group,
-                color: Colors.green[700],
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                '${widget.selectedPlayers.length} player(s) selected',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Inter',
-                  color: Colors.green[700],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
         // Available players as round buttons in a grid
         Wrap(
           spacing: 12,
@@ -740,29 +719,73 @@ class _PlayerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isCurrentUser = player['isCurrentUser'] == true;
+    
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Round button with avatar
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: isSelected ? Colors.blue : Colors.grey[300]!,
-                width: isSelected ? 3 : 2,
+          Stack(
+            children: [
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  border: isSelected ? Border.all(
+                    color: const Color(0xFF3F768E),
+                    width: 3,
+                  ) : null,
+                ),
+                child: Center(
+                  child: player['imageUrl'] != null
+                      ? ClipOval(
+                          child: Image.network(
+                            player['imageUrl'],
+                            width: 66,
+                            height: 66,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Text(
+                                player['avatar'],
+                                style: const TextStyle(fontSize: 28),
+                              );
+                            },
+                          ),
+                        )
+                      : Text(
+                          player['avatar'],
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                ),
               ),
-            ),
-            child: Center(
-              child: Text(
-                player['avatar'],
-                style: const TextStyle(fontSize: 28),
-              ),
-            ),
+              // Current user indicator
+              if (isCurrentUser)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: Colors.green[600],
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Colors.white,
+                        width: 2,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.person,
+                      size: 12,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 8),
           // Player name
@@ -773,9 +796,9 @@ class _PlayerButton extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                fontWeight: FontWeight.w600,
+                fontWeight: isCurrentUser ? FontWeight.w700 : FontWeight.w600,
                 fontFamily: 'Inter',
-                color: isSelected ? Colors.blue[800] : Colors.black,
+                color: isSelected ? const Color(0xFF3F768E) : (isCurrentUser ? Colors.green[800] : Colors.black),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

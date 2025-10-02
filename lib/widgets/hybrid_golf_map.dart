@@ -93,7 +93,7 @@ class _HybridGolfMapState extends State<HybridGolfMap> {
       
       // Calculate screen-relative offset (in degrees)
       // We want tee at bottom, so offset center northward from tee
-      final offsetDistance = 0.002; // Adjust this to control tee position
+      final offsetDistance = 0.0025; // Adjust this to control tee position
       
       // Apply rotation to offset vector
       final offsetAngle = bearingRadians; // Direction from tee toward green
@@ -306,12 +306,7 @@ class _HybridGolfMapState extends State<HybridGolfMap> {
       for (int i = 1; i < preferredPath.length - 1; i++) {
         final point = preferredPath[i];
         
-        // Calculate distance from tee to this landing area using current point position
-        final distance = _calculateDistance(
-          hole.teePosition.latitude, hole.teePosition.longitude,
-          point.latitude, point.longitude,
-        );
-        
+        // Add draggable fairway marker (no distance label)
         markers.add(Marker(
           point: latlong.LatLng(point.latitude, point.longitude),
           width: 32,
@@ -333,18 +328,11 @@ class _HybridGolfMapState extends State<HybridGolfMap> {
                   ),
                 ],
               ),
-              child: Center(
-                child: Transform.rotate(
-                  angle: -_currentMapRotation * math.pi / 180,
-                  child: Text(
-                    '${distance.round()}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
+              child: const Center(
+                child: Icon(
+                  Icons.my_location,
+                  color: Colors.white,
+                  size: 16,
                 ),
               ),
             ),
@@ -376,10 +364,10 @@ class _HybridGolfMapState extends State<HybridGolfMap> {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.transparent,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.blue,
+                  color: Colors.white,
                   width: 2,
                 ),
                 boxShadow: [
@@ -390,17 +378,102 @@ class _HybridGolfMapState extends State<HybridGolfMap> {
                   ),
                 ],
               ),
-              child: Center(
-                child: Transform.rotate(
-                  angle: -_currentMapRotation * math.pi / 180,
-                  child: Text(
-                    '${distance.round()}',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Inter',
-                    ),
+              child: const Center(
+                child: Icon(
+                  Icons.my_location,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+            ),
+          ),
+        ));
+        
+        // Add distance markers between segments
+        
+        // Distance marker 1: Between tee and current fairway point
+        final prevPoint = i == 1 ? hole.teePosition : preferredPath[i - 1];
+        final distance1 = _calculateDistance(
+          prevPoint.latitude, prevPoint.longitude,
+          point.latitude, point.longitude,
+        );
+        
+        // Calculate midpoint between previous point and current fairway point
+        final midLat1 = (prevPoint.latitude + point.latitude) / 2;
+        final midLng1 = (prevPoint.longitude + point.longitude) / 2;
+        
+        markers.add(Marker(
+          point: latlong.LatLng(midLat1, midLng1),
+          width: 24,
+          height: 24,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Transform.rotate(
+                angle: -_currentMapRotation * math.pi / 180,
+                child: Text(
+                  '${distance1.round()}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ));
+        
+        // Distance marker 2: Between current fairway point and next point (or green if last)
+        final nextPoint = i == preferredPath.length - 2 ? hole.greenPosition : preferredPath[i + 1];
+        final distance2 = _calculateDistance(
+          point.latitude, point.longitude,
+          nextPoint.latitude, nextPoint.longitude,
+        );
+        
+        // Calculate midpoint between current fairway point and next point
+        final midLat2 = (point.latitude + nextPoint.latitude) / 2;
+        final midLng2 = (point.longitude + nextPoint.longitude) / 2;
+        
+        markers.add(Marker(
+          point: latlong.LatLng(midLat2, midLng2),
+          width: 24,
+          height: 24,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.grey, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Center(
+              child: Transform.rotate(
+                angle: -_currentMapRotation * math.pi / 180,
+                child: Text(
+                  '${distance2.round()}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Inter',
                   ),
                 ),
               ),

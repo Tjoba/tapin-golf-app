@@ -232,9 +232,13 @@ out geom;
         if (teesByHole.containsKey(holeNum) && greensByHole.containsKey(holeNum)) {
           final teeCenter = _getFeatureCenter(teesByHole[holeNum]!);
           final greenCenter = _getFeatureCenter(greensByHole[holeNum]!);
+          final greenFeature = greensByHole[holeNum]!;
           final distance = _calculateDistance(teeCenter, greenCenter);
           final meters = distance.round(); // Keep as meters
           final par = holeNum <= pars.length ? pars[holeNum - 1] : 4;
+          
+          // Calculate green distances using green geometry
+          final greenDistances = _calculateGreenDistances(teeCenter, greenFeature.points);
           
           // Use actual fairway geometry if available for this hole
           List<LatLng>? preferredPath;
@@ -252,6 +256,9 @@ out geom;
             teePosition: teeCenter,
             greenPosition: greenCenter,
             preferredPath: preferredPath,
+            frontGreenDistance: greenDistances['front'],
+            backGreenDistance: greenDistances['back'],
+            greenGeometry: greenFeature.points,
           ));
         }
       }
@@ -294,6 +301,9 @@ out geom;
             final holeNumber = holes.length + 1;
             final par = holeNumber <= pars.length ? pars[holeNumber - 1] : 4;
             
+            // Calculate green distances using green geometry
+            final greenDistances = _calculateGreenDistances(teeCenter, closestGreen.points);
+            
             // Try to find a fairway that connects this tee and green
             List<LatLng>? preferredPath;
             GolfFeature? bestFairway;
@@ -325,6 +335,9 @@ out geom;
               teePosition: teeCenter,
               greenPosition: greenCenter,
               preferredPath: preferredPath,
+              frontGreenDistance: greenDistances['front'],
+              backGreenDistance: greenDistances['back'],
+              greenGeometry: closestGreen.points,
             ));
             
             remainingGreens.remove(closestGreen);
@@ -455,6 +468,36 @@ out geom;
     
     return earthRadius * c;
   }
+
+  // Calculate front, center, and back distances to green
+  static Map<String, int> _calculateGreenDistances(LatLng teePosition, List<LatLng> greenGeometry) {
+    if (greenGeometry.isEmpty) {
+      // Fallback if no green geometry available
+      return {'front': 0, 'center': 0, 'back': 0};
+    }
+
+    // Calculate distances to all green edge points
+    List<double> distances = greenGeometry
+        .map((point) => _calculateDistance(teePosition, point))
+        .toList();
+
+    if (distances.isEmpty) {
+      return {'front': 0, 'center': 0, 'back': 0};
+    }
+
+    // Front = closest point, Back = farthest point
+    double frontDistance = distances.reduce(math.min);
+    double backDistance = distances.reduce(math.max);
+    
+    // Center = average of all edge points (more accurate than single center point)
+    double centerDistance = distances.reduce((a, b) => a + b) / distances.length;
+
+    return {
+      'front': frontDistance.round(),
+      'center': centerDistance.round(), 
+      'back': backDistance.round(),
+    };
+  }
   
   static int? _parseHoleNumber(Map<String, dynamic> tags) {
     // Try to extract hole number from various possible tag formats
@@ -506,6 +549,9 @@ out geom;
         teePosition: teePosition,
         greenPosition: greenPosition,
         preferredPath: _generateStrategicPath(teePosition, greenPosition, par, holeMeters),
+        frontGreenDistance: holeMeters - 10, // Approximate front green distance
+        backGreenDistance: holeMeters + 10, // Approximate back green distance
+        greenGeometry: null, // No geometry available for sample holes
       );
     });
   }
@@ -562,6 +608,9 @@ class HoleData {
   final List<LatLng>? preferredPath; // Strategic path from tee to green
   final String? holeName; // Name of the hole (e.g., "Tallbacken", "Kevinge")
   final int? handicap; // Hole difficulty ranking (1-18)
+  final int? frontGreenDistance; // Distance to front of green
+  final int? backGreenDistance; // Distance to back of green
+  final List<LatLng>? greenGeometry; // Full green outline for calculations
 
   HoleData({
     required this.number,
@@ -572,6 +621,9 @@ class HoleData {
     this.preferredPath,
     this.holeName,
     this.handicap,
+    this.frontGreenDistance,
+    this.backGreenDistance,
+    this.greenGeometry,
   });
 }
 

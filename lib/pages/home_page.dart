@@ -491,6 +491,7 @@ class _HomePageState extends State<HomePage> {
           // Latest Finished Round Section
           Container(
             color: Colors.white,
+            margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -865,85 +866,380 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          // Content section
+          // Martin H. Started Round Section
           Container(
-            padding: const EdgeInsets.all(16.0),
+            color: Colors.white,
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20),
-                const Text(
-                  'Quick Actions',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      // Profile image
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.3),
+                            width: 1,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: Image.network(
+                            'https://media.licdn.com/dms/image/v2/D4D03AQHmrJawzEWAlg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1730402790769?e=1762387200&v=beta&t=pG_FjugAmOaZgskQgvw4nElC5Q71uw2xMfJjhFPdw_8',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Color(0xFF2E7D32),
+                                ),
+                                child: const Icon(
+                                  Icons.person,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      // Header text
+                      const Text(
+                        'Martin H. started a round',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                // Additional info below header
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 36), // Align with text after profile image
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Started 30 minutes ago',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[600],
+                            fontFamily: 'Inter',
+                            height: 1.0, // 12px line height / 12px font size = 1.0
+                            letterSpacing: 0.0,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${_latestFinishedRound['courseName']} (18 holes)',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[600],
+                            fontFamily: 'Inter',
+                            height: 1.0, // 12px line height / 12px font size = 1.0
+                            letterSpacing: 0.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                // Statistics Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      // Score
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Current Score',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF333333),
+                              fontFamily: 'Inter',
+                              height: 1.0,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '18',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Inter',
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Strokes
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Hole',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF333333),
+                              fontFamily: 'Inter',
+                              height: 1.0,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '6/18',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Inter',
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Position
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Position',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF333333),
+                              fontFamily: 'Inter',
+                              height: 1.0,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '2/4',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Inter',
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Achievements
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Birdies',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF333333),
+                              fontFamily: 'Inter',
+                              height: 1.0,
+                              letterSpacing: 0.0,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              Text(
+                                '2',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: 'Inter',
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.golf_course,
+                                size: 16,
+                                color: Colors.green,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
-                Column(
-                  children: [
-                    _QuickActionCard(
-                      icon: Icons.sports_golf,
-                      title: 'Quick Play',
-                      subtitle: 'Start a new round',
-                    ),
-                    SizedBox(height: 12),
-                    _QuickActionCard(
-                      icon: Icons.calendar_today,
-                      title: 'Book Tee Time',
-                      subtitle: 'Reserve your spot',
-                    ),
-                    SizedBox(height: 12),
-                    _QuickActionCard(
-                      icon: Icons.search,
-                      title: 'Find Courses',
-                      subtitle: 'Discover new places to play',
-                    ),
-                  ],
+                SizedBox(
+                  height: 285,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _latestFinishedRound['images'].length,
+                    itemBuilder: (context, index) {
+                      final imageUrl = _latestFinishedRound['images'][index];
+                      return Container(
+                        width: 380,
+                        margin: EdgeInsets.only(
+                          right: index == _latestFinishedRound['images'].length - 1 ? 16 : 8,
+                          left: 0, // No left margin for any image
+                        ),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 1,
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                  size: 40,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Like and Comment Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      // Like and Comment Actions
+                      Row(
+                        children: [
+                          // Like Button
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.favorite_border,
+                                size: 24,
+                                color: Colors.grey[700],
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                '8',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 20),
+                          // Comment Button
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.chat_bubble_outline,
+                                size: 24,
+                                color: Colors.grey[700],
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                '2',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey[700],
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Spacer(),
+                          // Share Button
+                          Icon(
+                            Icons.share_outlined,
+                            size: 24,
+                            color: Colors.grey[700],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      // Comment Preview
+                      SizedBox(
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                  color: Colors.black,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: 'sarah_johnson ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: 'Good luck out there! Weather looks perfect ☀️',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'View all 2 comments',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
         ],
         ),
-      ),
-    );
-  }
-}
-
-class _QuickActionCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _QuickActionCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: Theme.of(context).colorScheme.primary,
-          size: 32,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
-          // TODO: Navigate to appropriate page
-        },
       ),
     );
   }

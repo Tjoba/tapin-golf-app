@@ -104,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                   icon,
                   size: 24,
                   color: isSelected
-                      ? Theme.of(context).colorScheme.primary
+                      ? const Color(0xFF3F768E)
                       : Colors.grey,
                 ),
                 const SizedBox(height: 2),
@@ -142,7 +142,7 @@ class _MainScreenState extends State<MainScreen> {
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
                     letterSpacing: -0.5,
-                    color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey,
+                    color: isSelected ? const Color(0xFF3F768E) : Colors.grey,
                   ),
                 ),
               ],

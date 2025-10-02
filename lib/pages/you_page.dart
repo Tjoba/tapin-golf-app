@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile_settings_page.dart';
 
 class YouPage extends StatelessWidget {
   const YouPage({super.key});
@@ -23,13 +24,34 @@ class YouPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      child: const Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.white,
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.green[600]!,
+                          width: 3,
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.green[600],
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                size: 40,
+                                color: Colors.white,
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -38,26 +60,29 @@ class YouPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'John Golfer',
+                            'Tobias Hanner',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
+                              fontFamily: 'Inter',
                             ),
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Handicap: 12',
+                            'Handicap: 16.6',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,
+                              fontFamily: 'Inter',
                             ),
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Member since 2024',
+                            'Member since 2023',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey,
+                              fontFamily: 'Inter',
                             ),
                           ),
                         ],
@@ -65,7 +90,12 @@ class YouPage extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
-                        // TODO: Edit profile
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileSettingsPage(),
+                          ),
+                        );
                       },
                       icon: const Icon(Icons.edit),
                     ),
@@ -140,38 +170,46 @@ class YouPage extends StatelessWidget {
             const SizedBox(height: 12),
             Expanded(
               child: ListView(
-                children: const [
+                children: [
                   _MenuTile(
                     icon: Icons.person,
                     title: 'Profile Settings',
                     subtitle: 'Edit your personal information',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileSettingsPage(),
+                        ),
+                      );
+                    },
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.history,
                     title: 'Game History',
                     subtitle: 'View your past rounds',
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.favorite,
                     title: 'Favorite Courses',
                     subtitle: 'Manage your favorite golf courses',
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.notifications,
                     title: 'Notifications',
                     subtitle: 'Manage your notification preferences',
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.settings,
                     title: 'App Settings',
                     subtitle: 'Configure app preferences',
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.help,
                     title: 'Help & Support',
                     subtitle: 'Get help and contact support',
                   ),
-                  _MenuTile(
+                  const _MenuTile(
                     icon: Icons.logout,
                     title: 'Sign Out',
                     subtitle: 'Sign out of your account',
@@ -240,11 +278,13 @@ class _MenuTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
+  final VoidCallback? onTap;
 
   const _MenuTile({
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.onTap,
   });
 
   @override
@@ -262,7 +302,7 @@ class _MenuTile extends StatelessWidget {
         ),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.arrow_forward_ios),
-        onTap: () {
+        onTap: onTap ?? () {
           // TODO: Navigate to appropriate page
         },
       ),
