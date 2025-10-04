@@ -9,9 +9,8 @@ class PlayPage extends StatefulWidget {
 }
 
 class _PlayPageState extends State<PlayPage> {
-  String selectedFilter = 'Booked'; // Default selected filter
-  String? selectedCourse; // Track selected course
-  List<String> selectedPlayers = []; // Track selected players
+  String? selectedCourse;
+  List<String> selectedPlayers = [];
 
   @override
   void initState() {
@@ -24,34 +23,33 @@ class _PlayPageState extends State<PlayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 60), // More safe area spacing
             // Header
-            const Text(
-              'Select golf course',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Inter',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const Text(
+                'Search golf course',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                  color: Colors.black,
+                ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
             // Search Bar
-            Container(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: TextField(
                 style: const TextStyle(
@@ -81,46 +79,24 @@ class _PlayPageState extends State<PlayPage> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
-            // Course Filter Menu
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  _CourseFilterChip(
-                    label: 'Booked',
-                    icon: Icons.calendar_today,
-                    isSelected: selectedFilter == 'Booked',
-                    onTap: () => setState(() => selectedFilter = 'Booked'),
-                  ),
-                  const SizedBox(width: 12),
-                  _CourseFilterChip(
-                    label: 'Closest',
-                    icon: Icons.near_me,
-                    isSelected: selectedFilter == 'Closest',
-                    onTap: () => setState(() => selectedFilter = 'Closest'),
-                  ),
-                  const SizedBox(width: 12),
-                  _CourseFilterChip(
-                    label: 'Latest',
-                    icon: Icons.access_time,
-                    isSelected: selectedFilter == 'Latest',
-                    onTap: () => setState(() => selectedFilter = 'Latest'),
-                  ),
-                  const SizedBox(width: 12),
-                  _CourseFilterChip(
-                    label: 'Favorites',
-                    icon: Icons.favorite,
-                    isSelected: selectedFilter == 'Favorites',
-                    onTap: () => setState(() => selectedFilter = 'Favorites'),
-                  ),
-                ],
-              ),
             ),
             const SizedBox(height: 20),
-            // Course List based on selected filter
+            // Or select a favorite course text
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const Text(
+                'Or select a favorite course',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  fontFamily: 'Inter',
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Course List
             _CourseListView(
-              selectedFilter: selectedFilter,
               selectedCourse: selectedCourse,
               onCourseSelected: (courseName) {
                 setState(() {
@@ -130,12 +106,15 @@ class _PlayPageState extends State<PlayPage> {
             ),
             const SizedBox(height: 30),
             // Player Selection Section
-            const Text(
-              'Select players',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Inter',
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: const Text(
+                'Select players',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Inter',
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -153,7 +132,7 @@ class _PlayPageState extends State<PlayPage> {
               Container(
                 width: double.infinity,
                 height: 50,
-                margin: const EdgeInsets.only(bottom: 20),
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -167,7 +146,7 @@ class _PlayPageState extends State<PlayPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[600],
+                    backgroundColor: const Color(0xFF3F768E),
                     foregroundColor: Colors.white,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
@@ -192,396 +171,233 @@ class _PlayPageState extends State<PlayPage> {
 }
 
 class _CourseListView extends StatelessWidget {
-  final String selectedFilter;
   final String? selectedCourse;
   final Function(String) onCourseSelected;
   
   const _CourseListView({
-    required this.selectedFilter,
     required this.selectedCourse,
     required this.onCourseSelected,
   });
 
-  // Different course data based on selected filter
+  // All available courses
   List<Map<String, dynamic>> get _courses {
-    switch (selectedFilter) {
-      case 'Booked':
-        return [
-          {
-            'courseName': 'Stockholms Golfklubb',
-            'location': 'Kevinge Strand, Danderyd',
-            'distance': '1.2 miles',
-            'rating': '4.6',
-            'price': 'Booked',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Pebble Beach Golf Links',
-            'location': 'Pebble Beach, CA',
-            'distance': '2.3 miles',
-            'rating': '4.8',
-            'price': 'Booked',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'TPC Sawgrass',
-            'location': 'Ponte Vedra Beach, FL',
-            'distance': '12.4 miles',
-            'rating': '4.9',
-            'price': 'Booked',
-            'imageUrl': 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=400&h=250&fit=crop',
-          },
-        ];
-      case 'Closest':
-        return [
-          {
-            'courseName': 'Stockholms Golfklubb',
-            'location': 'Kevinge Strand, Danderyd',
-            'distance': '0.5 miles',
-            'rating': '4.6',
-            'price': '\$120',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Presidio Golf Course',
-            'location': 'San Francisco, CA',
-            'distance': '0.8 miles',
-            'rating': '4.3',
-            'price': '\$85',
-            'imageUrl': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Lincoln Park Golf',
-            'location': 'San Francisco, CA',
-            'distance': '1.2 miles',
-            'rating': '4.1',
-            'price': '\$65',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Golden Gate Park Golf',
-            'location': 'San Francisco, CA',
-            'distance': '1.5 miles',
-            'rating': '4.0',
-            'price': '\$55',
-            'imageUrl': 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=400&h=250&fit=crop',
-          },
-        ];
-      case 'Latest':
-        return [
-          {
-            'courseName': 'Bandon Dunes Golf Resort',
-            'location': 'Bandon, OR',
-            'distance': '8.7 miles',
-            'rating': '4.9',
-            'price': '\$395',
-            'imageUrl': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Chambers Bay Golf Course',
-            'location': 'University Place, WA',
-            'distance': '15.3 miles',
-            'rating': '4.7',
-            'price': '\$275',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Streamsong Resort',
-            'location': 'Bowling Green, FL',
-            'distance': '22.1 miles',
-            'rating': '4.8',
-            'price': '\$325',
-            'imageUrl': 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=400&h=250&fit=crop',
-          },
-        ];
-      case 'Favorites':
-        return [
-          {
-            'courseName': 'Augusta National Golf Club',
-            'location': 'Augusta, GA',
-            'distance': '15.7 miles',
-            'rating': '4.9',
-            'price': '\$450',
-            'imageUrl': 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'St. Andrews Old Course',
-            'location': 'St. Andrews, Scotland',
-            'distance': '2.1 miles',
-            'rating': '4.8',
-            'price': '\$320',
-            'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
-          },
-          {
-            'courseName': 'Cypress Point Club',
-            'location': 'Pebble Beach, CA',
-            'distance': '3.2 miles',
-            'rating': '5.0',
-            'price': 'Private',
-            'imageUrl': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=250&fit=crop',
-          },
-        ];
-      default:
-        return [];
-    }
+    return [
+      {
+        'courseName': 'Stockholms Golfklubb',
+        'location': 'Kevinge Strand, Danderyd',
+        'distance': '1.2 miles',
+        'rating': '4.6',
+        'price': 'Booked',
+        'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
+      },
+      {
+        'courseName': 'Pebble Beach Golf Links',
+        'location': 'Pebble Beach, CA',
+        'distance': '2.3 miles',
+        'rating': '4.8',
+        'price': '\$420',
+        'imageUrl': 'https://images.unsplash.com/photo-1535131749006-b7f58c99034b?w=400&h=250&fit=crop',
+      },
+      {
+        'courseName': 'TPC Sawgrass',
+        'location': 'Ponte Vedra Beach, FL',
+        'distance': '12.4 miles',
+        'rating': '4.9',
+        'price': '\$350',
+        'imageUrl': 'https://images.unsplash.com/photo-1593111774240-d529f12cf4bb?w=400&h=250&fit=crop',
+      },
+
+
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200, // Fixed height matching upcoming rounds
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _courses.length,
-        itemBuilder: (context, index) {
-          final course = _courses[index];
-          final isSelected = selectedCourse == course['courseName'];
-          return GestureDetector(
-            onTap: () => onCourseSelected(course['courseName']),
-            child: Container(
-              margin: EdgeInsets.only(
-                right: index == _courses.length - 1 ? 0 : 16,
-              ),
-              width: 320,
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      itemCount: _courses.length,
+      itemBuilder: (context, index) {
+        final course = _courses[index];
+        final isSelected = selectedCourse == course['courseName'];
+        return GestureDetector(
+          onTap: () => onCourseSelected(course['courseName']),
+          child: Container(
+            margin: EdgeInsets.only(
+              bottom: index == _courses.length - 1 ? 0 : 8,
+            ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: isSelected ? Border.all(
-                  color: Colors.blue,
-                  width: 3,
-                ) : null,
-                boxShadow: [
-                  BoxShadow(
-                    color: isSelected 
-                      ? Colors.blue.withOpacity(0.3)
-                      : Colors.black.withOpacity(0.1),
-                    spreadRadius: isSelected ? 3 : 2,
-                    blurRadius: isSelected ? 12 : 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+                color: Colors.white,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Stack(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
                   children: [
-                    // Course Image
+                    // Logo placeholder
                     Container(
-                      width: double.infinity,
-                      height: double.infinity,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(course['imageUrl']),
-                          fit: BoxFit.cover,
-                        ),
+                        color: (course['courseName'] == 'Stockholms Golfklubb' || course['courseName'] == 'Pebble Beach Golf Links' || course['courseName'] == 'TPC Sawgrass')
+                            ? Colors.white 
+                            : const Color(0xFF3F768E).withOpacity(0.1),
+                        shape: BoxShape.circle,
                       ),
-                    ),
-                    // Gradient Overlay
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.7),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // Selection indicator
-                    if (isSelected)
-                      Positioned(
-                        top: 16,
-                        right: 16,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                        ),
-                      ),
-                    // Course Info
-                    Positioned(
-                      bottom: 16,
-                      left: 16,
-                      right: 16,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            course['courseName'],
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Inter',
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                color: Colors.white70,
-                                size: 14,
+                      child: course['courseName'] == 'Stockholms Golfklubb'
+                          ? ClipOval(
+                              child: Image.network(
+                                'https://media.licdn.com/dms/image/v2/C4D0BAQFRMkoQyshsUA/company-logo_200_200/company-logo_200_200/0/1677945840570/stockholms_golfklubb_logo?e=1762387200&v=beta&t=wIU3CZN0igL__CSPwR5gxnrJsw9w_X2QNZEwzYOvz_g',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Fallback to default icon if image fails to load
+                                  return Icon(
+                                    Icons.golf_course,
+                                    color: const Color(0xFF3F768E),
+                                    size: 30,
+                                  );
+                                },
                               ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  course['location'],
+                            )
+                          : course['courseName'] == 'Pebble Beach Golf Links'
+                          ? ClipOval(
+                              child: Image.network(
+                                'https://shop.pebblebeach.com/media/catalog/product/cache/f5145d18489ce367df032006b8df698d/i/m/img_5484.jpg',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Fallback to default icon if image fails to load
+                                  return Icon(
+                                    Icons.golf_course,
+                                    color: const Color(0xFF3F768E),
+                                    size: 30,
+                                  );
+                                },
+                              ),
+                            )
+                          : course['courseName'] == 'TPC Sawgrass'
+                          ? ClipOval(
+                              child: Image.network(
+                                'https://cdn.cookielaw.org/logos/90140a3f-c2e1-44aa-b1a3-0eefbfd83edf/9c14de9e-9717-4931-b060-3d5897dfe06d/bdf97a1f-f3c1-404d-bdfe-4434f11f1766/TPC_Mark_rgb.png',
+                                width: 60,
+                                height: 60,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Fallback to default icon if image fails to load
+                                  return Icon(
+                                    Icons.golf_course,
+                                    color: const Color(0xFF3F768E),
+                                    size: 30,
+                                  );
+                                },
+                              ),
+                            )
+                          : Icon(
+                              Icons.golf_course,
+                              color: const Color(0xFF3F768E),
+                              size: 30,
+                            ),
+                    ),
+                    const SizedBox(width: 16),
+                    // Course Info
+                    Expanded(
+                      child: Row(
+                        children: [
+                          // Left side: Course name and location
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  course['courseName'],
                                   style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 14,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w900,
                                     fontFamily: 'Inter',
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                              Text(
-                                course['distance'],
-                                style: const TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 12,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.white.withOpacity(0.3),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 12,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      course['rating'],
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Inter',
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.green.withOpacity(0.9),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: Text(
-                                  course['price'],
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+                                const SizedBox(height: 4),
+                                Text(
+                                  course['location'],
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.grey[600],
                                     fontFamily: 'Inter',
+                                    height: 1.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Right side: Price and rating
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Only show price for Stockholms Golfklubb when Booked
+                              if (course['courseName'] == 'Stockholms Golfklubb' && course['price'] == 'Booked')
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF77A3B6),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Text(
+                                    course['price'],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400,
+                                      fontFamily: 'Inter',
+                                    ),
                                   ),
                                 ),
-                              ),
+                              // Add spacing only if price is shown
+                              if (course['courseName'] == 'Stockholms Golfklubb' && course['price'] == 'Booked')
+                                const SizedBox(height: 8),
                             ],
                           ),
                         ],
                       ),
                     ),
+                    // Selection indicator
+                    if (isSelected)
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
 
-class _CourseFilterChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
 
-  const _CourseFilterChip({
-    required this.label,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF3F768E) : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isSelected ? const Color(0xFF3F768E) : Colors.grey[300]!,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: 16,
-              color: isSelected ? Colors.white : Colors.grey[600],
-            ),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'Inter',
-                color: isSelected ? Colors.white : Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _PlayerSelectionWidget extends StatefulWidget {
   final List<String> selectedPlayers;
@@ -771,7 +587,7 @@ class _PlayerButton extends StatelessWidget {
                     width: 20,
                     height: 20,
                     decoration: BoxDecoration(
-                      color: Colors.green[600],
+                      color: const Color(0xFF3F768E),
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: Colors.white,
@@ -798,7 +614,7 @@ class _PlayerButton extends StatelessWidget {
                 fontSize: 12,
                 fontWeight: isCurrentUser ? FontWeight.w700 : FontWeight.w600,
                 fontFamily: 'Inter',
-                color: isSelected ? const Color(0xFF3F768E) : (isCurrentUser ? Colors.green[800] : Colors.black),
+                color: isSelected ? const Color(0xFF3F768E) : (isCurrentUser ? const Color(0xFF3F768E).withOpacity(0.8) : Colors.black),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

@@ -18,6 +18,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.1
 
 flutter:
   uses-material-design: true
@@ -47,3 +48,9 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/images/app_icon.jpg"
+
+flutter_native_splash:
+  background_image: assets/images/golf_course_hero.jpg
+  background_image_dark: assets/images/golf_course_hero.jpg
+  android_12:
+    background_image: assets/images/golf_course_hero.jpg
