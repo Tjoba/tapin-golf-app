@@ -10,7 +10,7 @@ class BookPage extends StatefulWidget {
 class _BookPageState extends State<BookPage> {
   String? selectedCourse;
   DateTime? selectedDate;
-  int selectedPlayers = 0;
+  List<Map<String, String>> selectedPlayers = []; // Changed to list of player objects
   String? selectedTimeSlot;
 
   @override
@@ -73,7 +73,7 @@ class _BookPageState extends State<BookPage> {
               ),
               const SizedBox(height: 20),
               // Available Time Slots
-              if (selectedCourse != null && selectedDate != null && selectedPlayers > 0) ...[
+              if (selectedCourse != null && selectedDate != null && selectedPlayers.isNotEmpty) ...[
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: const Text(
@@ -88,7 +88,7 @@ class _BookPageState extends State<BookPage> {
                 ),
                 const SizedBox(height: 12),
                 _TimeSlotGrid(
-                  selectedPlayers: selectedPlayers,
+                  selectedPlayers: selectedPlayers.length,
                   onTimeSlotSelected: (timeSlot) {
                     setState(() {
                       selectedTimeSlot = timeSlot;
@@ -98,7 +98,7 @@ class _BookPageState extends State<BookPage> {
                 const SizedBox(height: 20),
               ],
               // Book Button - only show when all details are selected and a time slot is chosen
-              if (selectedCourse != null && selectedDate != null && selectedPlayers > 0 && selectedTimeSlot != null)
+              if (selectedCourse != null && selectedDate != null && selectedPlayers.isNotEmpty && selectedTimeSlot != null)
                 Container(
                   width: double.infinity,
                   height: 50,
@@ -108,7 +108,7 @@ class _BookPageState extends State<BookPage> {
                       // TODO: Implement booking logic
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Booking tee time at $selectedTimeSlot on ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year} at $selectedCourse for $selectedPlayers player${selectedPlayers > 1 ? 's' : ''}'),
+                          content: Text('Booking tee time at $selectedTimeSlot on ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year} at $selectedCourse for ${selectedPlayers.length} player${selectedPlayers.length > 1 ? 's' : ''}: ${selectedPlayers.map((p) => p['name']).join(', ')}'),
                           backgroundColor: const Color(0xFF3F768E),
                           duration: const Duration(seconds: 3),
                         ),
@@ -143,10 +143,10 @@ class _BookPageState extends State<BookPage> {
 class _BookingDetailsWidget extends StatelessWidget {
   final String? selectedCourse;
   final DateTime? selectedDate;
-  final int selectedPlayers;
+  final List<Map<String, String>> selectedPlayers;
   final Function(String?) onCourseChanged;
   final Function(DateTime) onDateChanged;
-  final Function(int) onPlayersChanged;
+  final Function(List<Map<String, String>>) onPlayersChanged;
 
   const _BookingDetailsWidget({
     required this.selectedCourse,
@@ -450,95 +450,87 @@ class _BookingDetailsWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          // Players Selection
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.people,
-                  color: const Color(0xFF3F768E),
-                  size: 24,
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Players',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '$selectedPlayers player${selectedPlayers > 1 ? 's' : ''}',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                    ],
+          // Players Selection - Clean rebuild
+          GestureDetector(
+            onTap: () => _showPlayerSelection(context),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.people,
+                    color: const Color(0xFF3F768E),
+                    size: 24,
                   ),
-                ),
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: selectedPlayers > 1 ? () => onPlayersChanged(selectedPlayers - 1) : null,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: selectedPlayers > 1 ? Colors.grey[200] : Colors.grey[100],
-                          borderRadius: BorderRadius.circular(8),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Players',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Inter',
+                          ),
                         ),
-                        child: Icon(
-                          Icons.remove,
-                          color: selectedPlayers > 1 ? Colors.black : Colors.grey[400],
-                          size: 16,
+                        const SizedBox(height: 4),
+                        Text(
+                          selectedPlayers.isEmpty 
+                              ? 'Select players'
+                              : '${selectedPlayers.length} player${selectedPlayers.length > 1 ? 's' : ''}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: selectedPlayers.isNotEmpty ? Colors.black : Colors.grey[600],
+                            fontFamily: 'Inter',
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    Text(
-                      selectedPlayers.toString(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    GestureDetector(
-                      onTap: selectedPlayers < 4 ? () => onPlayersChanged(selectedPlayers + 1) : null,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: selectedPlayers < 4 ? Colors.grey[200] : Colors.grey[100],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: selectedPlayers < 4 ? Colors.black : Colors.grey[400],
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.grey[400],
+                    size: 16,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Available friends and suggested players (same as play page)
+  List<Map<String, String>> get _availablePlayers {
+    return [
+      {'name': 'Tobias Hanner', 'username': '@tobias', 'avatar': 'TH', 'handicap': '16.6'},
+      {'name': 'Andreas Lantz', 'username': '@andreas', 'avatar': 'AL', 'handicap': '12'},
+      {'name': 'Magnus Berg', 'username': '@magnus', 'avatar': 'MB', 'handicap': '8'},
+      {'name': 'Markus Ahlsen', 'username': '@markus', 'avatar': 'MA', 'handicap': '15'},
+      {'name': 'Martin Hanner', 'username': '@martin', 'avatar': 'MH', 'handicap': '18'},
+      {'name': 'Pelle Holmstrom', 'username': '@pelle', 'avatar': 'PH', 'handicap': '11'},
+      {'name': 'Stefan Landfeldt', 'username': '@stefan', 'avatar': 'SL', 'handicap': '14'},
+    ];
+  }
+
+  void _showPlayerSelection(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => _PlayerSelectionModal(
+        initialSelectedPlayers: selectedPlayers,
+        availablePlayers: _availablePlayers,
+        onPlayersChanged: onPlayersChanged,
       ),
     );
   }
@@ -1032,6 +1024,190 @@ class _TimeSlotGridState extends State<_TimeSlotGrid> {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _PlayerSelectionModal extends StatefulWidget {
+  final List<Map<String, String>> initialSelectedPlayers;
+  final List<Map<String, String>> availablePlayers;
+  final Function(List<Map<String, String>>) onPlayersChanged;
+
+  const _PlayerSelectionModal({
+    required this.initialSelectedPlayers,
+    required this.availablePlayers,
+    required this.onPlayersChanged,
+  });
+
+  @override
+  State<_PlayerSelectionModal> createState() => _PlayerSelectionModalState();
+}
+
+class _PlayerSelectionModalState extends State<_PlayerSelectionModal> {
+  late List<Map<String, String>> selectedPlayers;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedPlayers = List<Map<String, String>>.from(widget.initialSelectedPlayers);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            margin: const EdgeInsets.only(top: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Header
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                const Text(
+                  'Select Players',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Search Bar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
+                onChanged: (query) {
+                  // You can implement search filtering here
+                  // For now, we'll keep it simple and show all players
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search friends by name...',
+                  hintStyle: TextStyle(
+                    fontFamily: 'Inter',
+                    color: Colors.grey[600],
+                  ),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                style: const TextStyle(fontFamily: 'Inter'),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Available Players List
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Your Friends',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: widget.availablePlayers.length,
+              itemBuilder: (context, index) {
+                final player = widget.availablePlayers[index];
+                final isSelected = selectedPlayers.any((p) => p['name'] == player['name']);
+                
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF3F768E).withOpacity(0.1) : Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: isSelected 
+                        ? Border.all(color: const Color(0xFF3F768E).withOpacity(0.3), width: 2)
+                        : Border.all(color: Colors.grey[200]!),
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: const Color(0xFF3F768E),
+                      child: Text(
+                        player['avatar']!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      player['name']!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    subtitle: Text(
+                      '${player['username']!} • Handicap: ${player['handicap']!}',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    trailing: isSelected 
+                        ? const Icon(Icons.check_circle, color: Color(0xFF3F768E))
+                        : null,
+                    onTap: () {
+                      if (selectedPlayers.length < 4 || isSelected) {
+                        setState(() {
+                          if (isSelected) {
+                            selectedPlayers.removeWhere((p) => p['name'] == player['name']);
+                          } else {
+                            selectedPlayers.add(player);
+                          }
+                        });
+                        // Update parent state
+                        widget.onPlayersChanged(selectedPlayers);
+                      }
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
