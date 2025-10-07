@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="60dp"
+    android:viewportWidth="200"
+    android:viewportHeight="60">
+    
+    <group android:name="text_group">
+        <path
+            android:pathData="M20,15 L20,45 M15,15 L25,15 M15,45 L25,45"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"/>
+        
+        <path
+            android:pathData="M40,15 L60,15 M50,15 L50,45"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"/>
+        
+        <path
+            android:pathData="M75,15 L75,45 M75,30 L90,30 M90,15 L90,45"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"/>
+        
+        <path
+            android:pathData="M105,15 L105,45 M105,15 L115,15 M105,30 L115,30"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"/>
+        
+        <path
+            android:pathData="M130,15 L150,15 M130,45 L150,45 M140,15 L140,45 M140,30 L150,30"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3"
+            android:strokeLineCap="round"/>
+        
+        <circle
+            android:cx="165"
+            android:cy="40"
+            android:r="3"
+            android:fillColor="#FFFFFF"/>
+    </group>
+</vector>

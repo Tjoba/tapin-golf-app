@@ -4,7 +4,6 @@ import 'pages/play_page.dart';
 import 'pages/book_page.dart';
 import 'pages/search_page.dart';
 import 'pages/you_page.dart';
-import 'pages/splash_screen.dart';
 
 void main() {
   runApp(const TapinApp());
@@ -57,33 +56,8 @@ class TapinApp extends StatelessWidget {
           labelSmall: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w900),
         ),
       ),
-      home: const AppWrapper(),
+      home: const MainScreen(),
     );
-  }
-}
-
-class AppWrapper extends StatefulWidget {
-  const AppWrapper({super.key});
-
-  @override
-  State<AppWrapper> createState() => _AppWrapperState();
-}
-
-class _AppWrapperState extends State<AppWrapper> {
-  bool _showSplash = true;
-
-  void _onSplashComplete() {
-    setState(() {
-      _showSplash = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_showSplash) {
-      return SplashScreen(onAnimationComplete: _onSplashComplete);
-    }
-    return const MainScreen();
   }
 }
 

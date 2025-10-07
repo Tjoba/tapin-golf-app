@@ -7,100 +7,193 @@ class YouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('You'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header
-            Card(
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.green[600]!,
-                          width: 3,
-                        ),
-                      ),
-                      child: ClipOval(
-                        child: Image.network(
-                          'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY',
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.green[600],
-                              ),
-                              child: const Icon(
-                                Icons.person,
-                                size: 40,
-                                color: Colors.white,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Expanded(
+            // Main picture section (like HomePage)
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/you_page_hero.webp'),
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topCenter,
+                ),
+              ),
+              child: Stack(
+                children: [
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(
-                            'Tobias Hanner',
+                          const SizedBox(height: 0),
+                          // Profile and handicap row
+                          Row(
+                            children: [
+                              // User profile picture
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 3,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: Image.network(
+                                    'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY',
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Color(0xFF2E7D32),
+                                        ),
+                                        child: const Icon(
+                                          Icons.person,
+                                          size: 40,
+                                          color: Colors.white,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Handicap display
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.3),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'HCP 16.6',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Inter',
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              // Settings icon with dropdown menu
+                              PopupMenuButton<int>(
+                                icon: const Icon(Icons.settings, color: Colors.white),
+                                color: Colors.white,
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 0:
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const ProfileSettingsPage(),
+                                        ),
+                                      );
+                                      break;
+                                    case 1:
+                                      // Notifications
+                                      // TODO: Implement navigation to notifications page
+                                      break;
+                                    case 2:
+                                      // App Settings
+                                      // TODO: Implement navigation to app settings page
+                                      break;
+                                    case 3:
+                                      // Help & Support
+                                      // TODO: Implement navigation to help & support page
+                                      break;
+                                    case 4:
+                                      // Sign Out
+                                      // TODO: Implement sign out logic
+                                      break;
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  const PopupMenuItem<int>(
+                                    value: 0,
+                                    child: ListTile(
+                                      leading: Icon(Icons.person),
+                                      title: Text('Profile Settings'),
+                                    ),
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 1,
+                                    child: ListTile(
+                                      leading: Icon(Icons.notifications),
+                                      title: Text('Notifications'),
+                                    ),
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 2,
+                                    child: ListTile(
+                                      leading: Icon(Icons.settings),
+                                      title: Text('App Settings'),
+                                    ),
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 3,
+                                    child: ListTile(
+                                      leading: Icon(Icons.help),
+                                      title: Text('Help & Support'),
+                                    ),
+                                  ),
+                                  const PopupMenuItem<int>(
+                                    value: 4,
+                                    child: ListTile(
+                                      leading: Icon(Icons.logout),
+                                      title: Text('Sign Out'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          // App logo/title
+                          const Text(
+                            'Welcome back!',
                             style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 21,
                               fontFamily: 'Inter',
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Handicap: 16.6',
+                          const Text(
+                            'You are hitting the fairway 89% of the times',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey,
                               fontFamily: 'Inter',
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Member since 2023',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileSettingsPage(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.edit),
-                    ),
-                  ],
-                ),
+                  ),
+                  // You can add more overlays here if needed (e.g., friends counter)
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -168,54 +261,54 @@ class YouPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Expanded(
-              child: ListView(
-                children: [
-                  _MenuTile(
-                    icon: Icons.person,
-                    title: 'Profile Settings',
-                    subtitle: 'Edit your personal information',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileSettingsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  const _MenuTile(
-                    icon: Icons.history,
-                    title: 'Game History',
-                    subtitle: 'View your past rounds',
-                  ),
-                  const _MenuTile(
-                    icon: Icons.favorite,
-                    title: 'Favorite Courses',
-                    subtitle: 'Manage your favorite golf courses',
-                  ),
-                  const _MenuTile(
-                    icon: Icons.notifications,
-                    title: 'Notifications',
-                    subtitle: 'Manage your notification preferences',
-                  ),
-                  const _MenuTile(
-                    icon: Icons.settings,
-                    title: 'App Settings',
-                    subtitle: 'Configure app preferences',
-                  ),
-                  const _MenuTile(
-                    icon: Icons.help,
-                    title: 'Help & Support',
-                    subtitle: 'Get help and contact support',
-                  ),
-                  const _MenuTile(
-                    icon: Icons.logout,
-                    title: 'Sign Out',
-                    subtitle: 'Sign out of your account',
-                  ),
-                ],
-              ),
+            ListView(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: [
+                _MenuTile(
+                  icon: Icons.person,
+                  title: 'Profile Settings',
+                  subtitle: 'Edit your personal information',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileSettingsPage(),
+                      ),
+                    );
+                  },
+                ),
+                const _MenuTile(
+                  icon: Icons.history,
+                  title: 'Game History',
+                  subtitle: 'View your past rounds',
+                ),
+                const _MenuTile(
+                  icon: Icons.favorite,
+                  title: 'Favorite Courses',
+                  subtitle: 'Manage your favorite golf courses',
+                ),
+                const _MenuTile(
+                  icon: Icons.notifications,
+                  title: 'Notifications',
+                  subtitle: 'Manage your notification preferences',
+                ),
+                const _MenuTile(
+                  icon: Icons.settings,
+                  title: 'App Settings',
+                  subtitle: 'Configure app preferences',
+                ),
+                const _MenuTile(
+                  icon: Icons.help,
+                  title: 'Help & Support',
+                  subtitle: 'Get help and contact support',
+                ),
+                const _MenuTile(
+                  icon: Icons.logout,
+                  title: 'Sign Out',
+                  subtitle: 'Sign out of your account',
+                ),
+              ],
             ),
           ],
         ),

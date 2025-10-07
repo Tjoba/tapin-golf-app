@@ -15,8 +15,8 @@ class _PlayPageState extends State<PlayPage> {
   @override
   void initState() {
     super.initState();
-    // Pre-select the logged-in user (Tobias Hanner)
-    selectedPlayers = ['Tobias Hanner'];
+    // Start with no players selected - user can manually select including themselves
+    selectedPlayers = [];
   }
 
   @override
@@ -111,9 +111,10 @@ class _PlayPageState extends State<PlayPage> {
               child: const Text(
                 'Select players',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                   fontFamily: 'Inter',
+                  color: Colors.black,
                 ),
               ),
             ),
@@ -414,46 +415,82 @@ class _PlayerSelectionWidget extends StatefulWidget {
 
 class _PlayerSelectionWidgetState extends State<_PlayerSelectionWidget> {
   final List<Map<String, dynamic>> _availablePlayers = [
-    {'name': 'Tobias Hanner', 'handicap': '16.6', 'avatar': '👤', 'imageUrl': 'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY', 'isCurrentUser': true}, // Logged in user
-    {'name': 'Andreas Lantz', 'handicap': '12', 'avatar': '👤'},
-    {'name': 'Magnus Berg', 'handicap': '8', 'avatar': '�'},
-    {'name': 'Markus Ahlsen', 'handicap': '15', 'avatar': '�'},
-    {'name': 'Martin Hanner', 'handicap': '18', 'avatar': '👤'},
-    {'name': 'Pelle Holmstrom', 'handicap': '11', 'avatar': '👤'},
-    {'name': 'Stefan Landfeldt', 'handicap': '14', 'avatar': '�'},
+    {'name': 'Tobias Hanner', 'handicap': '16.6', 'imageUrl': 'https://media.licdn.com/dms/image/v2/C4D03AQGaqt95NNb4UQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1516782855402?e=1761782400&v=beta&t=S-xAJxOYW6H6jSkzSHMV85kwEUtztSZ5_2YjPq51TBY', 'isCurrentUser': true}, // Logged in user
+    {'name': 'Andreas Lantz', 'handicap': '12', 'imageUrl': 'https://media.licdn.com/dms/image/v2/C4E03AQFy5W-ZVRH00w/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1519566998561?e=1762387200&v=beta&t=Yvf0kLDe1KIdv3hoP3UYtw0e7lUhpltV13pO4Y0sK1s'},
+    {'name': 'Magnus Berg', 'handicap': '8'},
+    {'name': 'Markus Ahlsen', 'handicap': '15'},
+    {'name': 'Martin Hanner', 'handicap': '18', 'imageUrl': 'http://media.licdn.com/dms/image/v2/D4D03AQHmrJawzEWAlg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1730402790769?e=1762387200&v=beta&t=pG_FjugAmOaZgskQgvw4nElC5Q71uw2xMfJjhFPdw_8'},
+    {'name': 'Pelle Holmstrom', 'handicap': '11'},
+    {'name': 'Stefan Landfeldt', 'handicap': '14'},
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Available players as round buttons in a grid
-        Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: [
-            // Existing players
-            ..._availablePlayers.map((player) => _PlayerButton(
-              player: player,
-              isSelected: widget.selectedPlayers.contains(player['name']),
-              onTap: () {
-                List<String> updatedPlayers = List.from(widget.selectedPlayers);
-                if (updatedPlayers.contains(player['name'])) {
-                  updatedPlayers.remove(player['name']);
-                } else {
-                  updatedPlayers.add(player['name']);
-                }
-                widget.onPlayersChanged(updatedPlayers);
-              },
-            )).toList(),
-            // Add Friend button
-            _AddFriendButton(
-              onTap: () => _showAddFriendDialog(context),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Available players as round buttons in a horizontal scrolling row
+          SizedBox(
+            height: 100, // Fixed height for the scrolling area
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  // Add Friend button first
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: _AddFriendButton(
+                      onTap: () => _showAddFriendDialog(context),
+                    ),
+                  ),
+                  // Tobias (logged-in user) second
+                  ..._availablePlayers.where((player) => player['isCurrentUser'] == true).map((player) => Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: _PlayerButton(
+                      player: player,
+                      isSelected: widget.selectedPlayers.contains(player['name']),
+                      onTap: () {
+                        List<String> updatedPlayers = List.from(widget.selectedPlayers);
+                        if (updatedPlayers.contains(player['name'])) {
+                          updatedPlayers.remove(player['name']);
+                        } else {
+                          // Only add if less than 4 players are selected
+                          if (updatedPlayers.length < 4) {
+                            updatedPlayers.add(player['name']);
+                          }
+                        }
+                        widget.onPlayersChanged(updatedPlayers);
+                      },
+                    ),
+                  )),
+                  // Rest of the players
+                  ..._availablePlayers.where((player) => player['isCurrentUser'] != true).map((player) => Padding(
+                    padding: const EdgeInsets.only(right: 12.0),
+                    child: _PlayerButton(
+                      player: player,
+                      isSelected: widget.selectedPlayers.contains(player['name']),
+                      onTap: () {
+                        List<String> updatedPlayers = List.from(widget.selectedPlayers);
+                        if (updatedPlayers.contains(player['name'])) {
+                          updatedPlayers.remove(player['name']);
+                        } else {
+                          // Only add if less than 4 players are selected
+                          if (updatedPlayers.length < 4) {
+                            updatedPlayers.add(player['name']);
+                          }
+                        }
+                        widget.onPlayersChanged(updatedPlayers);
+                      },
+                    ),
+                  )),
+                ],
+              ),
             ),
-          ],
-        ),
-      ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -494,7 +531,6 @@ class _PlayerSelectionWidgetState extends State<_PlayerSelectionWidget> {
                     _availablePlayers.add({
                       'name': nameController.text.trim(),
                       'handicap': '0',
-                      'avatar': '👤',
                     });
                   });
                   Navigator.of(context).pop();
@@ -522,6 +558,14 @@ class _PlayerButton extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
+
+  String _getPlayerInitials(String name) {
+    List<String> nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return '${nameParts[0][0]}${nameParts[1][0]}'.toUpperCase();
+    }
+    return nameParts[0][0].toUpperCase();
+  }
 
   String _formatPlayerName(String fullName) {
     List<String> nameParts = fullName.split(' ');
@@ -566,15 +610,23 @@ class _PlayerButton extends StatelessWidget {
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return Text(
-                                player['avatar'],
-                                style: const TextStyle(fontSize: 28),
+                                _getPlayerInitials(player['name']),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF3F768E),
+                                ),
                               );
                             },
                           ),
                         )
                       : Text(
-                          player['avatar'],
-                          style: const TextStyle(fontSize: 28),
+                          _getPlayerInitials(player['name']),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF3F768E),
+                          ),
                         ),
                 ),
               ),
