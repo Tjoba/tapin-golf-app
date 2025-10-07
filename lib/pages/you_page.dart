@@ -198,117 +198,139 @@ class YouPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // Statistics
-            const Text(
-              'Statistics',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    title: 'Rounds Played',
-                    value: '47',
-                    icon: Icons.sports_golf,
-                    color: Colors.blue,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    title: 'Best Score',
-                    value: '82',
-                    icon: Icons.emoji_events,
-                    color: Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    title: 'Courses Played',
-                    value: '12',
-                    icon: Icons.golf_course,
-                    color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    title: 'Avg. Score',
-                    value: '89',
-                    icon: Icons.trending_down,
-                    color: Colors.purple,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Menu Options
-            const Text(
-              'Account',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            ListView(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                _MenuTile(
-                  icon: Icons.person,
-                  title: 'Profile Settings',
-                  subtitle: 'Edit your personal information',
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfileSettingsPage(),
+            // Statistics & Menu with horizontal padding
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Statistics',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
                       ),
-                    );
-                  },
-                ),
-                const _MenuTile(
-                  icon: Icons.history,
-                  title: 'Game History',
-                  subtitle: 'View your past rounds',
-                ),
-                const _MenuTile(
-                  icon: Icons.favorite,
-                  title: 'Favorite Courses',
-                  subtitle: 'Manage your favorite golf courses',
-                ),
-                const _MenuTile(
-                  icon: Icons.notifications,
-                  title: 'Notifications',
-                  subtitle: 'Manage your notification preferences',
-                ),
-                const _MenuTile(
-                  icon: Icons.settings,
-                  title: 'App Settings',
-                  subtitle: 'Configure app preferences',
-                ),
-                const _MenuTile(
-                  icon: Icons.help,
-                  title: 'Help & Support',
-                  subtitle: 'Get help and contact support',
-                ),
-                const _MenuTile(
-                  icon: Icons.logout,
-                  title: 'Sign Out',
-                  subtitle: 'Sign out of your account',
-                ),
-              ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  GridView.count(
+                    crossAxisCount: 4,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 4,
+                    mainAxisSpacing: 4,
+                    childAspectRatio: 0.85,
+                    padding: EdgeInsets.zero,
+                    children: const [
+                      _StatCard(
+                        title: 'Rounds',
+                        value: '47',
+                        icon: Icons.sports_golf,
+                        color: Colors.blue,
+                        iconSize: 22,
+                        valueFontSize: 16,
+                        titleFontSize: 10,
+                      ),
+                      _StatCard(
+                        title: 'Best Score',
+                        value: '82',
+                        icon: Icons.emoji_events,
+                        color: Colors.orange,
+                        iconSize: 22,
+                        valueFontSize: 16,
+                        titleFontSize: 10,
+                      ),
+                      _StatCard(
+                        title: 'Courses',
+                        value: '12',
+                        icon: Icons.golf_course,
+                        color: Colors.green,
+                        iconSize: 22,
+                        valueFontSize: 16,
+                        titleFontSize: 10,
+                      ),
+                      _StatCard(
+                        title: 'Avg. Score',
+                        value: '89',
+                        icon: Icons.trending_down,
+                        color: Colors.purple,
+                        iconSize: 22,
+                        valueFontSize: 16,
+                        titleFontSize: 10,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Menu Options
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Account',
+                      style: TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      _MenuTile(
+                        icon: Icons.person,
+                        title: 'Profile Settings',
+                        subtitle: 'Edit your personal information',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileSettingsPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const _MenuTile(
+                        icon: Icons.history,
+                        title: 'Game History',
+                        subtitle: 'View your past rounds',
+                      ),
+                      const _MenuTile(
+                        icon: Icons.favorite,
+                        title: 'Favorite Courses',
+                        subtitle: 'Manage your favorite golf courses',
+                      ),
+                      const _MenuTile(
+                        icon: Icons.notifications,
+                        title: 'Notifications',
+                        subtitle: 'Manage your notification preferences',
+                      ),
+                      const _MenuTile(
+                        icon: Icons.settings,
+                        title: 'App Settings',
+                        subtitle: 'Configure app preferences',
+                      ),
+                      const _MenuTile(
+                        icon: Icons.help,
+                        title: 'Help & Support',
+                        subtitle: 'Get help and contact support',
+                      ),
+                      const _MenuTile(
+                        icon: Icons.logout,
+                        title: 'Sign Out',
+                        subtitle: 'Sign out of your account',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -317,46 +339,66 @@ class YouPage extends StatelessWidget {
   }
 }
 
+
 class _StatCard extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
   final Color color;
+  final double iconSize;
+  final double valueFontSize;
+  final double titleFontSize;
 
   const _StatCard({
     required this.title,
     required this.value,
     required this.icon,
     required this.color,
+    this.iconSize = 32,
+    this.valueFontSize = 24,
+    this.titleFontSize = 12,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: BorderSide(
+          color: Colors.grey.shade300,
+          width: 1,
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(6.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               color: color,
-              size: 32,
+              size: iconSize,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
+                fontFamily: 'Inter',
                 fontSize: 12,
-                color: Colors.grey,
+                fontWeight: FontWeight.w400,
+                color: Colors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -383,8 +425,12 @@ class _MenuTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 1,
+      elevation: 0,
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
       child: ListTile(
         leading: Icon(icon),
         title: Text(
